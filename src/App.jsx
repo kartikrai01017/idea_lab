@@ -16,8 +16,8 @@ import TasksPage from './pages/TasksPage';
 import DashboardPage from './pages/DashboardPage';
 import AchievementsPage from './pages/AchievementsPage';
 import RewardsPage from './pages/RewardsPage';
-import UploadPage from './pages/UploadPage';
 import AuthPage from './pages/AuthPage';
+import { apiFetch } from './api';
 
 function App() {
   const [currentPage, setCurrentPage] = useState('home');
@@ -46,7 +46,7 @@ function App() {
     const token = localStorage.getItem('token');
     if (!token) return;
     try {
-      const res = await fetch('http://localhost:3001/api/users/me', {
+      const res = await apiFetch('/api/users/me', {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       if (res.ok) {

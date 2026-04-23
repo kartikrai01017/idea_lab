@@ -3,6 +3,7 @@ import { MapContainer, TileLayer, Marker, Popup, CircleMarker, useMap } from 're
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
 import { TYPE_CONFIG, FEED_MESSAGES } from '../../data/mockData';
+import { apiFetch } from '../../api';
 
 import iconRetina from 'leaflet/dist/images/marker-icon-2x.png';
 import iconUrl from 'leaflet/dist/images/marker-icon.png';
@@ -34,7 +35,7 @@ const LiveMap = ({ triggerToast }) => {
   );
 
   const fetchRealPins = () => {
-    fetch('http://localhost:3001/api/map')
+    apiFetch('/api/map')
       .then(r => r.json())
       .then(data => {
         const pinned = data.filter(d => d.latitude && d.longitude).map(d => ({

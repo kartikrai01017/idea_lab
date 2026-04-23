@@ -1,14 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { LEADERBOARD, ACTIVITY_LOG } from '../data/mockData';
+import { apiFetch } from '../api';
 
-const DashboardPage = ({ userPoints, userName }) => {
+const DashboardPage = ({ userPoints, userName, userStreak }) => {
   const currentPoints = Math.max(0, userPoints);
   const [liveBoard, setLiveBoard] = useState([]);
   const [boardLoading, setBoardLoading] = useState(true);
   const [myRank, setMyRank] = useState(null);
 
   const fetchLeaderboard = () => {
-    fetch('http://localhost:3001/api/users/leaderboard')
+    apiFetch('/api/users/leaderboard')
       .then(r => r.json())
       .then(data => {
         setLiveBoard(data);

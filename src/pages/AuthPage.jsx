@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { apiFetch } from '../api';
 
 const AuthPage = ({ setCurrentPage, triggerToast, onLoginSuccess }) => {
   const [isLogin, setIsLogin] = useState(true);
@@ -12,9 +13,9 @@ const AuthPage = ({ setCurrentPage, triggerToast, onLoginSuccess }) => {
     const endpoint = isLogin ? '/api/auth/login' : '/api/auth/register';
     
     try {
-      const res = await fetch(`http://localhost:3001${endpoint}`, {
+      const res = await apiFetch(endpoint, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        // Content-Type is auto appended by apiFetch wrapper
         body: JSON.stringify(formData)
       });
       

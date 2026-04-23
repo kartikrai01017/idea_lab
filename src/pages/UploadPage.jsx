@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { apiFetch } from '../api';
 
 // Generates a code string once per component load
 const genCode = () => {
@@ -143,10 +144,9 @@ const UploadPage = ({ triggerToast, onFraudDetected, onUploadSuccess }) => {
 
     try {
       const token = localStorage.getItem('token');
-      const res = await fetch('http://localhost:3001/api/tasks/submit', {
+      const res = await apiFetch('/api/tasks/submit', {
         method: 'POST',
         headers: { 
-          'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`
         },
         body: JSON.stringify({

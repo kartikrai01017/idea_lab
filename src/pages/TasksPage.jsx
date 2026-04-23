@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { apiFetch } from '../api';
 // Removing mockData import for tasks
 
 const TasksPage = ({ triggerToast }) => {
@@ -7,7 +8,7 @@ const TasksPage = ({ triggerToast }) => {
   const [tasksList, setTasksList] = useState([]);
 
   useEffect(() => {
-    fetch('http://localhost:3001/api/tasks')
+    apiFetch('/api/tasks')
       .then(res => res.json())
       .then(data => setTasksList(data))
       .catch(err => console.error(err));
