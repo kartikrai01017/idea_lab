@@ -3,8 +3,12 @@ const cors = require('cors');
 
 const app = express();
 
+
+
 app.use(cors({
-  origin: "*"
+  origin: "https://idea-lab-navy.vercel.app",
+  methods: ["GET", "POST", "PUT", "DELETE"],
+  credentials: true
 }));
 app.use(express.json());
 
