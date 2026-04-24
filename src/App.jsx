@@ -17,6 +17,7 @@ import DashboardPage from './pages/DashboardPage';
 import AchievementsPage from './pages/AchievementsPage';
 import RewardsPage from './pages/RewardsPage';
 import AuthPage from './pages/AuthPage';
+import UploadPage from './pages/UploadPage'
 import { apiFetch } from './api';
 
 function App() {
