@@ -101,6 +101,16 @@ function App() {
     setCurrentMode(prev => prev === 'light' ? 'dark' : 'light');
   };
 
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    setUserName('');
+    setUserPoints(0);
+    setFraudStrikes(0);
+    setUserStreak(0);
+    setCurrentPage('login');
+    triggerToast('Logged out successfully.');
+  };
+
   return (
     <div>
       <Navbar 
@@ -111,6 +121,8 @@ function App() {
         isDarkMode={currentMode === 'dark'}
         setShowPremium={setShowPremium} 
         userStreak={userStreak}
+        userName={userName}
+        handleLogout={handleLogout}
       />
       
       {/* Modals & Overlays */}
