@@ -18,13 +18,25 @@ router.get('/', (req, res) => {
 // POST /api/tasks/submit
 router.post('/submit', auth, async (req, res) => {
   console.log('--- Task Submission Received ---');
+  
   try {
+    // 🛡️ Safety check for missing body
+    if (!req.body) {
+      console.log('❌ Submission failed: req.body is undefined. Check express.json() middleware.');
+      return res.status(400).json({ error: 'Server error: Request body is missing' });
+    }
+
     const { taskType, passed, task_name, task_category, latitude, longitude } = req.body;
     const userId = req.user?.id;
 
     if (!userId) {
       console.log('❌ Submission failed: No userId in token');
       return res.status(401).json({ error: 'Unauthorized: No user ID' });
+    }
+
+    if (!taskType) {
+      console.log('❌ Submission failed: taskType is missing in body', req.body);
+      return res.status(400).json({ error: 'Missing taskType' });
     }
 
     console.log(`User ${userId} submitting ${taskType}. Passed: ${passed}`);
@@ -76,7 +88,6 @@ router.post('/submit', auth, async (req, res) => {
       }
     }
 
-    // Wrap in a transaction or sequential executes
     await db.execute({
       sql: `UPDATE users SET points = points + ?, current_streak = ?, last_active_date = ? WHERE id = ?`,
       args: [pts, newStreak, todayStr, userId],

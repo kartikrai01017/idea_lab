@@ -3,7 +3,7 @@ const cors = require('cors');
 
 const app = express();
 
-// ✅ CORS setuphttps://idea-b18pflyzp-kartikrai01017s-projects.vercel.app/ 
+// ✅ CORS setup
 const corsOptions = {
   origin: ["https://idea-b18pflyzp-kartikrai01017s-projects.vercel.app", "http://localhost:5173"],
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
@@ -14,7 +14,9 @@ const corsOptions = {
 app.use(cors(corsOptions));
 app.options(/.*/, cors(corsOptions));
 
+// ✅ JSON Parsers (Must be before routes)
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 // Routes
 app.use('/api/auth', require('./routes/auth'));
