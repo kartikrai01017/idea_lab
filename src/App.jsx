@@ -153,6 +153,7 @@ function App() {
       </main>
 
       <MobileNav currentPage={currentPage} setCurrentPage={setCurrentPage} />
+      <h1>check</h1>
     </div>
   );
 }
