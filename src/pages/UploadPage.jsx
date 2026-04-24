@@ -134,13 +134,27 @@ const UploadPage = ({ triggerToast, onFraudDetected, onUploadSuccess }) => {
     }
     
     // Map taskType to a human-readable task name & category
+    // Categories should align with LiveMap filters: tree, recycle, energy, water, cleanup, transport
     const taskMeta = {
       fitness: { name: 'Walk / Cycle', category: 'transport' },
       photo:   { name: 'Photo Proof', category: 'general' },
-      video:   { name: 'Live Video Action', category: 'general' },
-      group:   { name: 'Group Cleanup', category: 'waste' },
+      video:   { name: 'Action Proof', category: 'general' },
+      group:   { name: 'Cleanup Drive', category: 'cleanup' },
     };
     const meta = taskMeta[taskType] || { name: 'Eco Task', category: 'general' };
+
+    // Fallback: If coords are still null, try one last quick grab
+    let finalCoords = coords;
+    if (!finalCoords && navigator.geolocation) {
+      try {
+        const pos = await new Promise((resolve, reject) => {
+          navigator.geolocation.getCurrentPosition(resolve, reject, { timeout: 3000 });
+        });
+        finalCoords = { lat: pos.coords.latitude, lng: pos.coords.longitude };
+      } catch (e) {
+        console.log("Could not grab GPS at submission time");
+      }
+    }
 
     try {
       const token = localStorage.getItem('token');
@@ -154,10 +168,11 @@ const UploadPage = ({ triggerToast, onFraudDetected, onUploadSuccess }) => {
           passed: result?.pass,
           task_name: meta.name,
           task_category: meta.category,
-          latitude: coords?.lat || null,
-          longitude: coords?.lng || null,
+          latitude: finalCoords?.lat || null,
+          longitude: finalCoords?.lng || null,
         })
       });
+
       
       const data = await res.json();
       

@@ -19,14 +19,27 @@ L.Icon.Default.mergeOptions({
 
 const CAT_COLOR = {
   transport: '#3b82f6', waste: '#ec4899', water: '#22d3ee',
-  trees: '#22c55e', energy: '#a78bfa', general: '#f59e0b',
+  trees: '#22c55e', energy: '#a78bfa', general: '#f59e0b', cleanup: '#10b981'
 };
 const CAT_EMOJI = {
   transport: '🚶', waste: '♻️', water: '💧',
-  trees: '🌳', energy: '⚡', general: '🌱',
+  trees: '🌳', energy: '⚡', general: '🌱', cleanup: '🧹'
+};
+
+// Helper to auto-center map when pins load
+const MapAutoCenter = ({ pins }) => {
+  const map = useMap();
+  useEffect(() => {
+    if (pins.length > 0) {
+      const bounds = L.latLngBounds(pins.map(p => [p.latitude, p.longitude]));
+      map.fitBounds(bounds, { padding: [50, 50], maxZoom: 13 });
+    }
+  }, [pins.length, map]);
+  return null;
 };
 
 const LiveMap = ({ triggerToast }) => {
+
   const [filter, setFilter] = useState('all');
   const [liveCount, setLiveCount] = useState(47);
   const [realPins, setRealPins] = useState([]);
@@ -38,7 +51,8 @@ const LiveMap = ({ triggerToast }) => {
     apiFetch('/api/map')
       .then(r => r.json())
       .then(data => {
-        const pinned = data.filter(d => d.latitude && d.longitude).map(d => ({
+        // Fix: Use !== null to allow coordinate 0
+        const pinned = data.filter(d => d.latitude !== null && d.longitude !== null).map(d => ({
           ...d,
           color: CAT_COLOR[d.task_category] || CAT_COLOR.general,
           emoji: CAT_EMOJI[d.task_category] || '🌱',
@@ -98,12 +112,13 @@ const LiveMap = ({ triggerToast }) => {
       {/* CONTROLS */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '12px', marginBottom: '16px' }}>
         <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
-          {['all','tree','recycle','energy','water','cleanup'].map(f => (
+          {['all','tree','recycle','transport','water','cleanup'].map(f => (
             <button key={f} className={`map-filter-btn ${filter === f ? 'active' : ''}`} onClick={() => setFilter(f)}>
-              {f === 'all' ? '🗺️ All' : f === 'tree' ? '🌳 Trees' : f === 'recycle' ? '♻️ Recycling' : f === 'energy' ? '⚡ Energy' : f === 'water' ? '💧 Water' : '🌿 Cleanup'}
+              {f === 'all' ? '🗺️ All' : f === 'tree' ? '🌳 Trees' : f === 'recycle' ? '♻️ Recycling' : f === 'transport' ? '🚲 Transport' : f === 'water' ? '💧 Water' : '🧹 Cleanup'}
             </button>
           ))}
         </div>
+
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
           <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#22c55e', animation: 'pulse 1.5s infinite' }}></div>
           <span style={{ fontSize: '0.82rem', color: 'var(--text2)', fontWeight: 600 }}>Live — {liveCount} active now</span>
@@ -122,7 +137,10 @@ const LiveMap = ({ triggerToast }) => {
             attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
           />
           
+          <MapAutoCenter pins={realPins} />
+          
           {realPins.map((pin) => (
+
             // Only show pins that match the active category filter (if filter !== all)
             // Note: Since realPins use task_category which might not strictly align with the filter names
             // You may want to refine the condition, but for now we'll show all or attempt to filter by text
