@@ -4,12 +4,17 @@ const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:10000';
 
 export const apiFetch = (endpoint, options = {}) => {
   const url = `${API_URL}${endpoint}`;
+  
+  // Destructure headers from options to merge them properly
+  const { headers, ...otherOptions } = options;
+  
   return fetch(url, {
+    ...otherOptions,
     headers: {
       'Content-Type': 'application/json',
-      ...options.headers,
+      ...headers,
     },
-    ...options,
   });
 };
+
 
