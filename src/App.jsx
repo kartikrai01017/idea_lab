@@ -9,6 +9,8 @@ import PremiumModal from './components/common/PremiumModal';
 import TipBox from './components/common/TipBox';
 import Toast from './components/common/Toast';
 import { TIPS } from './data/mockData';
+import {Routes,Route} from 'react-router-dom'
+import { useNavigate } from 'react-router-dom';
 
 // Pages
 import HomePage from './pages/HomePage';
@@ -21,7 +23,8 @@ import UploadPage from './pages/UploadPage'
 import { apiFetch } from './api';
 
 function App() {
-  const [currentPage, setCurrentPage] = useState('home');
+  const navigate = useNavigate();
+  //const [currentPage, setCurrentPage] = useState('home');
   const [currentTheme, setCurrentTheme] = useState('soft');
   const [currentMode, setCurrentMode] = useState('light');
   
@@ -107,15 +110,15 @@ function App() {
     setUserPoints(0);
     setFraudStrikes(0);
     setUserStreak(0);
-    setCurrentPage('login');
+    //setCurrentPage('login');
     triggerToast('Logged out successfully.');
   };
 
   return (
     <div>
       <Navbar 
-        currentPage={currentPage} 
-        setCurrentPage={setCurrentPage} 
+       // currentPage={currentPage} 
+         
         setShowThemePanel={setShowThemePanel} 
         toggleMode={toggleMode} 
         isDarkMode={currentMode === 'dark'}
@@ -142,17 +145,57 @@ function App() {
       <PremiumModal show={showPremium} onClose={() => setShowPremium(false)} triggerToast={triggerToast} />
       <FabGroup onTipClick={popTip} onHelpClick={() => setShowHelp(true)} />
 
-      <main style={{ paddingTop: '64px', minHeight: '100vh' }}>
-        {currentPage === 'home' && <HomePage setCurrentPage={setCurrentPage} triggerToast={triggerToast} />}
-        {currentPage === 'tasks' && <TasksPage triggerToast={triggerToast} />}
-        {currentPage === 'dashboard' && <DashboardPage userPoints={userPoints} userName={userName} userStreak={userStreak} />}
-        {currentPage === 'achievements' && <AchievementsPage />}
-        {currentPage === 'rewards' && <RewardsPage triggerToast={triggerToast} userName={userName} />}
-        {currentPage === 'upload' && <UploadPage triggerToast={triggerToast} onFraudDetected={handleFraud} onUploadSuccess={fetchUserProfile} />}
-        {currentPage === 'login' && <AuthPage setCurrentPage={setCurrentPage} triggerToast={triggerToast} onLoginSuccess={fetchUserProfile} />}
-      </main>
+     <main>
+      <Routes>
+        <Route path="/" element={
+          <HomePage triggerToast={triggerToast} />
+        } />
 
-      <MobileNav currentPage={currentPage} setCurrentPage={setCurrentPage} />
+        <Route path="/tasks" element={
+         
+          <TasksPage triggerToast={triggerToast}/>
+        }/>
+
+         <Route path="/dashboard" element={
+      <DashboardPage 
+        userPoints={userPoints} 
+        userName={userName} 
+        userStreak={userStreak} 
+      />
+    } />
+
+    <Route path="/achievements" element={
+      <AchievementsPage />
+    } />
+
+    <Route path="/rewards" element={
+      <RewardsPage 
+        triggerToast={triggerToast} 
+        userName={userName} 
+      />
+    } />
+
+    <Route path="/upload" element={
+      <UploadPage 
+        triggerToast={triggerToast}
+        onFraudDetected={handleFraud}
+        onUploadSuccess={fetchUserProfile}
+      />
+    } />
+
+    <Route path="/login" element={
+      <AuthPage 
+        triggerToast={triggerToast}
+        onLoginSuccess={fetchUserProfile}
+      />
+    } />
+
+
+      </Routes>
+     </main>
+
+      
+      <h1>check</h1>
     </div>
   );
 }

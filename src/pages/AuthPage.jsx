@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import { apiFetch } from '../api';
+import { useNavigate } from 'react-router-dom';
 
-const AuthPage = ({ setCurrentPage, triggerToast, onLoginSuccess }) => {
+const AuthPage = ({ triggerToast, onLoginSuccess }) => {
+  const navigate =useNavigate();
   const [isLogin, setIsLogin] = useState(true);
   const [formData, setFormData] = useState({ name: '', email: '', password: '' });
   const [error, setError] = useState('');
@@ -30,9 +32,10 @@ const AuthPage = ({ setCurrentPage, triggerToast, onLoginSuccess }) => {
       triggerToast(`🎉 Welcome to EcoMira!`);
       
       // Tell App.jsx we logged in
-      if (onLoginSuccess) onLoginSuccess();
+      if (onLoginSuccess) {
+        await onLoginSuccess();}
       
-      setCurrentPage('home');
+       navigate('/dashboard');
       
     } catch (err) {
       setError(err.message);
@@ -76,7 +79,7 @@ const AuthPage = ({ setCurrentPage, triggerToast, onLoginSuccess }) => {
           <hr/><span>OR</span><hr/>
         </div>
 
-        <button className="btn-google" onClick={() => { setCurrentPage('home'); triggerToast('🎉 Authenticated via Google!'); }}>
+        <button className="btn-google" onClick={() => { navigate('/'); triggerToast('🎉 Authenticated via Google!'); }}>
           Continue with Google
         </button>
 
