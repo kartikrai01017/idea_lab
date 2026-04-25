@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import LiveMap from '../components/map/LiveMap';
 import AnimeBackground from '../components/common/AnimeBackground';
+import { useNavigate} from 'react-router-dom';
+
+
 
 const HomePage = ({ setCurrentPage, triggerToast }) => {
   const [stats, setStats] = useState({ trees: 0, citizens: 0, recycled: 0, saved: 0 });
@@ -25,6 +28,7 @@ const HomePage = ({ setCurrentPage, triggerToast }) => {
     }, 50);
     return () => clearInterval(int);
   }, []);
+  const navigate = useNavigate();
 
   return (
     <div className="page active fade-in" id="page-home">
@@ -45,8 +49,8 @@ const HomePage = ({ setCurrentPage, triggerToast }) => {
         <p className="hero-sub">Join thousands of citizens in Mira-Bhayandar building a greener tomorrow — through tree plantation, recycling, and energy conservation. Your actions are tracked, rewarded, and celebrated.</p>
         
         <div className="hero-cta">
-          <button className="btn-primary" onClick={() => setCurrentPage('login')}>🌱 Join Now — It's Free</button>
-          <button className="btn-outline" onClick={() => setCurrentPage('tasks')}>Explore Tasks ↗</button>
+          <button className="btn-primary" onClick={() => navigate('/login')}>🌱 Join Now — It's Free</button>
+          <button className="btn-outline" onClick={() => navigate('/tasks')}>Explore Tasks ↗</button>
         </div>
         
         <div className="hero-stats stagger">
