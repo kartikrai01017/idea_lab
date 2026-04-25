@@ -195,7 +195,7 @@ function App() {
      </main>
 
       
-      <h1>check</h1>
+      
     </div>
   );
 }
